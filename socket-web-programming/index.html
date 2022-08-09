@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"fuhy.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="简单的Socket入门 读的是《Beej’s Guide to Network Programming》这一本书">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Socket网络编程">
+<meta property="og:url" content="https://fuhy.github.io/socket-web-programming/">
+<meta property="og:site_name" content="Alfred&#39;s Blog">
+<meta property="og:description" content="简单的Socket入门 读的是《Beej’s Guide to Network Programming》这一本书">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-10-28T20:37:28.000Z">
+<meta property="article:modified_time" content="2022-08-08T08:35:33.005Z">
+<meta property="article:author" content="Alfred Fu">
+<meta property="article:tag" content="Note">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://fuhy.github.io/socket-web-programming/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Socket网络编程 | Alfred's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JGSH933PYM"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-JGSH933PYM');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Alfred's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://fuhy.github.io/socket-web-programming/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Alfred Fu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alfred's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Socket网络编程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-29 04:37:28" itemprop="dateCreated datePublished" datetime="2017-10-29T04:37:28+08:00">2017-10-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-08 16:35:33" itemprop="dateModified" datetime="2022-08-08T16:35:33+08:00">2022-08-08</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>简单的Socket入门</p>
+<p>读的是《Beej’s Guide to Network Programming》这一本书</p>
+<span id="more"></span>
+
+<h2 id="What-is-Socket"><a href="#What-is-Socket" class="headerlink" title="What is Socket?"></a>What is Socket?</h2><blockquote>
+<p>In UNIX, Everything is a file.</p>
+</blockquote>
+<p>Unix的I&#x2F;O操作通过读写file descriptor(一个跟已开启文件有关的整数)实现。Sockets是利用标准UNIX file descriptors与其他程序沟通的一种方式。</p>
+<p>Sockets有很多种，这里只讨论<code>Internet Sockets</code>. 共有两种，流和数据报。</p>
+<ul>
+<li>Stream Sockets<ul>
+<li>Connection-oriented and reliaby</li>
+</ul>
+</li>
+<li>Datagram Sockets<ul>
+<li>Message oriented.</li>
+</ul>
+</li>
+</ul>
+<h2 id="相关数据结构"><a href="#相关数据结构" class="headerlink" title="相关数据结构"></a>相关数据结构</h2><p>IP地址让我们能唯一地辨识Internet中的任意两台计算机，而再加上port number能标识本地计算机的进程。这样，通过 (IP, PORT)这一对二元组我们便能唯一地表示Internet中任意两台计算机中的任两个想要通信的进程。</p>
+<p>所以在获得套接字描述符<strong>socket descriptor</strong>之前，我们得先取得地址。</p>
+<ul>
+<li><strong>Struct addrinfo</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">int</span> ai_flags; <span class="comment">// AI_PASSIVE, AI_CANONNAME 等。</span></span><br><span class="line">    <span class="type">int</span> ai_family; <span class="comment">// AF_INET, AF_INET6, AF_UNSPEC</span></span><br><span class="line">    <span class="type">int</span> ai_socktype; <span class="comment">// SOCK_STREAM, SOCK_DGRAM</span></span><br><span class="line">    <span class="type">int</span> ai_protocol; <span class="comment">// 用 0 表示 &quot;any&quot;</span></span><br><span class="line">    <span class="type">size_t</span> ai_addrlen; <span class="comment">// ai_addr 的大小，单位是 byte</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> *<span class="title">ai_addr</span>;</span> <span class="comment">// struct sockaddr_in 或 _in6</span></span><br><span class="line">    <span class="type">char</span> *ai_canonname; <span class="comment">// 典型的 hostname</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> *<span class="title">ai_next</span>;</span> <span class="comment">// 链表</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这个结构体中存储了地址的相关信息，用来准备之后要用到的socket的地址结构或是host name和service name的查询。其中的成员包含了新的结构体<code>struct sockaddr</code>.</p>
+<ul>
+<li><strong>Struct sockaddr</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">short</span> sa_family; <span class="comment">// address family, AF_xxx </span></span><br><span class="line">    <span class="type">char</span> sa_data[<span class="number">14</span>]; <span class="comment">// 14 bytes of protocol address</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>内容很简单。</p>
+<p>在字符数组中手动填充Port number和IP address很不人性化，工程师提供了更友善的版本<code>struct sockaddr_in</code>.</p>
+<blockquote>
+<p>「in」 表示 「internet」🙃.</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// IPv4 only  ————  struct sockaddr_in6 for IPv6</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">short</span> <span class="type">int</span> sin_family; <span class="comment">// Address family, AF_INET</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">short</span> <span class="type">int</span> sin_port; <span class="comment">// Port number</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> <span class="title">sin_addr</span>;</span> <span class="comment">// Internet address</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> sin_zero[<span class="number">8</span>]; <span class="comment">// 与 struct sockaddr 相同的大小</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// IPv4 only ———— struct in6_addr for IPv6</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">in_addr</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> s_addr; <span class="comment">// that&#x27;s a 32-bit int (4 bytes) </span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>IPv4和IPv6的存储需要不同的数据结构。<code>struct sockaddr_storage</code>提供了足够大的空间使得其能支持两种版本IP.</p>
+</li>
+<li><p>注意到**<code>struct sockaddr</code>, <code>struct sockaddr_in</code> , <code>struct sockaddr_storage</code>**这三种数据结构可以相互cast.</p>
+</li>
+<li><p><strong>Getaddrinfo</strong></p>
+</li>
+</ul>
+<p>在很久以前程序员需要手动填充<code>struct addrinfo</code>. 但现在有了<code>getaddrinfo()</code>，我们可以很方便的得到一个<code>struct addrinfo</code>.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">getaddrinfo</span><span class="params">(  <span class="type">const</span> <span class="type">char</span> *node, <span class="type">const</span> <span class="type">char</span> *service, </span></span><br><span class="line"><span class="params">                  <span class="type">const</span> <span class="keyword">struct</span> addrinfo *hints,</span></span><br><span class="line"><span class="params">                  <span class="keyword">struct</span> addrinfo **res)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>node</code>是一个网址或者是IP地址</li>
+<li><code>service</code>是一个服务名如”http”或者一个port number. </li>
+<li>结构体成员<code>hint</code>是一个被填充好部分信息的<code>struct addrinfo</code>，用来提供给<code>getaddrinfo()</code>以返回期望的信息，(如SOCK_STREAM, SOCK_DGRAM的选择等等). 可以为NULL.</li>
+<li>res指向一个<strong>链表</strong>，表中的每个成员都会包含<strong>某种</strong><code>struct sockaddr</code>(比如IPv4啦IPv6啦等等)。</li>
+<li>使用完后需要调用<code>freeaddrinfo()</code>来释放这个链表。</li>
+</ul>
+<p>来一个例程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Show the IP address </span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> <span class="type">const</span> *argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="type">int</span> status = <span class="number">-1</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> <span class="title">hint</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">addrinfo</span> *<span class="title">linkaddr</span>, *<span class="title">temp</span>;</span></span><br><span class="line">	<span class="type">char</span> ipstr[INET6_ADDRSTRLEN];</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (argc != <span class="number">2</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;INPUT THE HOSTNAME\n&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// preprocess</span></span><br><span class="line">	<span class="built_in">memset</span>(&amp;hint, <span class="number">0</span>, <span class="keyword">sizeof</span>(hint));     </span><br><span class="line">	hint.ai_family = AF_UNSPEC;</span><br><span class="line">	hint.ai_socktype = SOCK_STREAM;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> ((status = getaddrinfo(argv[<span class="number">1</span>], <span class="literal">NULL</span>, &amp;hint, &amp;linkaddr)) != <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CANNOT GET ADDRESS INFO\n&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">  </span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;IP addresses for %s:\n\n&quot;</span>, argv[<span class="number">1</span>]);</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// Select the ip addresses from the linked list</span></span><br><span class="line">	<span class="keyword">for</span> (temp = linkaddr; temp != <span class="literal">NULL</span>; temp = temp-&gt;ai_next)     </span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">void</span> *address;</span><br><span class="line">		<span class="type">char</span> *ipVersion;</span><br><span class="line">      </span><br><span class="line">      	<span class="comment">// Get IP address itself</span></span><br><span class="line">        <span class="comment">// If it is IPv4</span></span><br><span class="line">		<span class="keyword">if</span>(temp-&gt;ai_family == AF_INET)                  </span><br><span class="line">		&#123;</span><br><span class="line">          	<span class="comment">// Use sockaddr_in to choose the ip address</span></span><br><span class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> *<span class="title">sa_in</span> =</span> (<span class="keyword">struct</span> sockaddr_in *)(temp-&gt;ai_addr);    </span><br><span class="line">			address = &amp;(sa_in-&gt;sin_addr);</span><br><span class="line">			ipVersion = <span class="string">&quot;IPv4&quot;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">struct</span> sockaddr_in6 *sa_in6 = (<span class="keyword">struct</span> sockaddr_in6 *)(temp-&gt;ai_addr);</span><br><span class="line">			address = &amp;(sa_in6-&gt;sin6_addr);</span><br><span class="line">			ipVersion = <span class="string">&quot;IPv6&quot;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">      </span><br><span class="line">        <span class="comment">// Binary mode to presentation</span></span><br><span class="line">		inet_ntop(temp-&gt;ai_family,address,ipstr,<span class="keyword">sizeof</span>(ipstr));       </span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%s: %s\n&quot;</span>,ipVersion,ipstr);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	freeaddrinfo(linkaddr);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Note/" rel="tag"># Note</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/note-of-attack-lab/" rel="prev" title="Attack Lab">
+      <i class="fa fa-chevron-left"></i> Attack Lab
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/brew-cask-update/" rel="next" title="基于Bash实现Homebrew cask自动升级">
+      基于Bash实现Homebrew cask自动升级 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Socket"><span class="nav-number">1.</span> <span class="nav-text">What is Socket?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">相关数据结构</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Alfred Fu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/fuhy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;fuhy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/alfredhy" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;alfredhy" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alfred Fu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
